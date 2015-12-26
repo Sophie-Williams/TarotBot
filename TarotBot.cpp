@@ -69,7 +69,7 @@ namespace Tarot {
 		game.PlayCard(playerPosition, card);
 	}
 
-	void GiveCards(const FunctionCallbackInfo<Value>& args) {
+	void AddCards(const FunctionCallbackInfo<Value>& args) {
 		Isolate* isolate = args.GetIsolate();
 
 		int playerPosition = ToInt(args[0]);
@@ -78,7 +78,7 @@ namespace Tarot {
 		game.AddCards(playerPosition, cards);
 	}
 
-	void GiveTrick(const FunctionCallbackInfo<Value>& args) {
+	void AddTrick(const FunctionCallbackInfo<Value>& args) {
 		Isolate* isolate = args.GetIsolate();
 
 		int playerPosition = ToInt(args[0]);
@@ -100,8 +100,8 @@ namespace Tarot {
 		NODE_SET_METHOD(exports, "newGame", NewGame);
 		NODE_SET_METHOD(exports, "setTakerPosition", SetTakerPosition);
 		NODE_SET_METHOD(exports, "playCard", PlayCard);
-		NODE_SET_METHOD(exports, "giveCards", GiveCards);
-		NODE_SET_METHOD(exports, "giveTrick", GiveTrick);
+		NODE_SET_METHOD(exports, "addCards", AddCards);
+		NODE_SET_METHOD(exports, "addTrick", AddTrick);
 		NODE_SET_METHOD(exports, "makeAside", MakeAside);
 	}
 
