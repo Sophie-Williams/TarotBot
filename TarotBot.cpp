@@ -11,6 +11,7 @@ namespace Tarot {
 	using v8::String;
 	using v8::Value;
 	using v8::Array;
+	using v8::Number;
 	using namespace std;
 
 	Game game;
@@ -96,6 +97,22 @@ namespace Tarot {
 		game.MakeAside(playerPosition, aside);
 	}
 
+	void GetAttackersScore(const FunctionCallbackInfo<Value>& args) {
+		Isolate* isolate = args.GetIsolate();
+		
+		Local<Number> attackersScore = Number::New(isolate, game.GetAttackersScore());
+
+		args.GetReturnValue().Set(attackersScore);
+	}
+
+	void GetDefendersScore(const FunctionCallbackInfo<Value>& args) {
+		Isolate* isolate = args.GetIsolate();
+
+		Local<Number> defendersScore = Number::New(isolate, game.GetDefendersScore());
+
+		args.GetReturnValue().Set(defendersScore);
+	}
+
 	void Initialize(Local<Object> exports) {
 		NODE_SET_METHOD(exports, "newGame", NewGame);
 		NODE_SET_METHOD(exports, "setTakerPosition", SetTakerPosition);
@@ -103,6 +120,8 @@ namespace Tarot {
 		NODE_SET_METHOD(exports, "addCards", AddCards);
 		NODE_SET_METHOD(exports, "addTrick", AddTrick);
 		NODE_SET_METHOD(exports, "makeAside", MakeAside);
+		NODE_SET_METHOD(exports, "getAttackersScore", GetAttackersScore);
+		NODE_SET_METHOD(exports, "getDefendersScore", GetDefendersScore);
 	}
 
 	NODE_MODULE(TarotBot, Initialize)

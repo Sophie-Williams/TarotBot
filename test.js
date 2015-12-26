@@ -156,3 +156,5 @@ tarotBot.addTrick(2, ['trump-21', 'diamond-11', 'club-14', 'trump-14']);
 
 // Final scores
 // Taker wins with 51pts for 41pts
+console.log("Attackers score : "+tarotBot.getAttackersScore());
+console.log("Defenders score : "+tarotBot.getDefendersScore());

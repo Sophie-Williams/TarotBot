@@ -50,3 +50,21 @@ void Tarot::Game::MakeAside(int playerPosition, vector<string> aside)
 {
 	players[playerPosition].MakeAside(aside);
 }
+
+float Tarot::Game::GetAttackersScore()
+{
+	float score = 0;;
+	for (unsigned int i = 0; i < attackers.size(); i++) {
+		score += players[attackers[i]].GetScore();
+	}
+	return score;
+}
+
+float Tarot::Game::GetDefendersScore()
+{
+	float score = 0;;
+	for (unsigned int i = 0; i < defenders.size(); i++) {
+		score += players[defenders[i]].GetScore();
+	}
+	return score;
+}

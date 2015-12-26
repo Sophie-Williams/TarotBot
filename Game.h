@@ -41,6 +41,12 @@ namespace Tarot {
 
 			// Takes the cards from the hand of the player and put them into the tricks
 			void MakeAside(int playerPosition, vector<string> aside);
+
+			// returns the total current score of the attackers
+			float GetAttackersScore();
+
+			// returns the total current score of the defenders
+			float GetDefendersScore();
 	};
 }
 
