@@ -1,6 +1,6 @@
 #include "Deck.h"
 
-map<string, Card> Deck = {
+map<string, Tarot::Card> Tarot::Deck::deck = {
 	{ "club-1", Card(Club, One) },
 	{ "club-2", Card(Club, Two) },
 	{ "club-3", Card(Club, Three) },
@@ -84,3 +84,7 @@ map<string, Card> Deck = {
 	{ "trump-20", Card(Trump, Twenty) },
 	{ "trump-21", Card(Trump, TwentyOne) }
 };
+
+Tarot::Card Tarot::Deck::Get(string key) {
+	return deck[key];
+}

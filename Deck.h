@@ -2,11 +2,17 @@
 #include <map>
 #include "Card.h"
 
-using namespace Tarot;
 using namespace std;
 
 namespace Tarot {
-	// Defines the full deck of the Tarot game
-	static map<string, Card> Deck;
+	class Deck {
+		private:
+			// Defines the full deck of the Tarot game
+			static map<string, Card> deck;
+
+		public:
+			// Returns the card referenced by this key
+			static Card Get(string key);
+	};
 }
 

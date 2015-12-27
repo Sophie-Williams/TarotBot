@@ -1,4 +1,4 @@
-var tarotBot = require('./build/Release/TarotBot');
+var tarotBot = require('./build/Debug/TarotBot');
 
 // Set-up the distribution of the cards
 var dog = ['trump-7', 'trump-13', 'club-8', 'spade-4', 'diamond-6', 'diamond-13'];
@@ -34,7 +34,7 @@ tarotBot.addTrick(2, ['heart-1', 'heart-14', 'heart-8', 'heart-6']);
 
 // Round 2
 tarotBot.playCard(2, 'heart-13');
-tarotBot.playCard(3, 'heart-8');
+tarotBot.playCard(3, 'heart-9');
 tarotBot.playCard(0, 'heart-6');
 tarotBot.playCard(1, 'heart-2');
 tarotBot.addTrick(2, ['heart-13', 'heart-8', 'heart-6', 'heart-2']);

@@ -10,7 +10,7 @@ Tarot::Player::~Player() {
 float Tarot::Player::GetScore() {
 	float score = 0;
 	for (unsigned int i = 0; i < tricks.size(); i++) {
-		score += Deck[tricks[i]].GetScore();
+		score += Deck::Get(tricks[i]).GetScore();
 	}
 	return score;
 }

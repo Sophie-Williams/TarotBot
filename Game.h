@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include "Player.h"
-#include "Card.h"
 
 namespace Tarot {
 	class Game

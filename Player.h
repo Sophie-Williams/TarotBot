@@ -3,8 +3,6 @@
 #include <algorithm>
 #include "Deck.h"
 
-using namespace std;
-
 namespace Tarot {
 	class Player
 	{
