@@ -97,6 +97,17 @@ namespace Tarot {
 		game.MakeAside(playerPosition, aside);
 	}
 
+	void ExchangeCard(const FunctionCallbackInfo<Value>& args) {
+		Isolate* isolate = args.GetIsolate();
+
+		int playerFromPosition = ToInt(args[0]);
+		int playerToPosition = ToInt(args[1]);
+		string cardFrom = ToString(args[2]);
+		string cardTo = ToString(args[3]);
+
+		game.ExchangeCard(playerFromPosition, playerToPosition, cardFrom, cardTo);
+	}
+
 	void GetAttackersScore(const FunctionCallbackInfo<Value>& args) {
 		Isolate* isolate = args.GetIsolate();
 		
@@ -120,6 +131,7 @@ namespace Tarot {
 		NODE_SET_METHOD(exports, "addCards", AddCards);
 		NODE_SET_METHOD(exports, "addTrick", AddTrick);
 		NODE_SET_METHOD(exports, "makeAside", MakeAside);
+		NODE_SET_METHOD(exports, "exchangeCard", ExchangeCard);
 		NODE_SET_METHOD(exports, "getAttackersScore", GetAttackersScore);
 		NODE_SET_METHOD(exports, "getDefendersScore", GetDefendersScore);
 	}

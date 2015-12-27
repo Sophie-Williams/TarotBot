@@ -12,7 +12,7 @@ namespace Tarot {
 
 		public:
 			// Returns the card referenced by this key
-			static Card Get(string key);
+			static Card* Get(string key);
 	};
 }
 

@@ -13,8 +13,17 @@ namespace Tarot {
 			// The tricks of the player into the current game
 			vector<string> tricks;
 
+			// Adds a card from the hand
+			void AddCardToHand(string card);
+
+			// Adds a card from the tricks
+			void AddCardToTricks(string card);
+
 			// Removes a card from the hand
-			void RemoveCard(string card);
+			void RemoveCardFromHand(string card);
+
+			// Removes a card from the tricks
+			void RemoveCardFromTricks(string card);
 
 		public:
 			// Player constructor
@@ -37,6 +46,10 @@ namespace Tarot {
 
 			// Takes the cards from the hand and put them into the tricks
 			void MakeAside(vector<string> aside);
+
+			// Takes the card `cardFrom` from the player tricks
+			// and exchanges it against the card `cardTo` from the other player tricks
+			void ExchangeCard(string cardFrom, string cardTo, Player* player);
 	};
 }
 

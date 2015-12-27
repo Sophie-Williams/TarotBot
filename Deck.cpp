@@ -85,6 +85,6 @@ map<string, Tarot::Card> Tarot::Deck::deck = {
 	{ "trump-21", Card(Trump, TwentyOne) }
 };
 
-Tarot::Card Tarot::Deck::Get(string key) {
-	return deck[key];
+Tarot::Card* Tarot::Deck::Get(string key) {
+	return &deck[key];
 }

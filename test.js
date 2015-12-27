@@ -37,7 +37,7 @@ tarotBot.playCard(2, 'heart-13');
 tarotBot.playCard(3, 'heart-9');
 tarotBot.playCard(0, 'heart-6');
 tarotBot.playCard(1, 'heart-2');
-tarotBot.addTrick(2, ['heart-13', 'heart-8', 'heart-6', 'heart-2']);
+tarotBot.addTrick(2, ['heart-13', 'heart-9', 'heart-6', 'heart-2']);
 
 // Round 3
 tarotBot.playCard(2, 'heart-5');
@@ -58,10 +58,9 @@ tarotBot.playCard(3, 'diamond-3');
 tarotBot.playCard(0, 'diamond-5');
 tarotBot.playCard(1, 'trump-10');
 tarotBot.playCard(2, 'trump-fool');
-tarotBot.addTrick(1, ['diamond-3', 'diamond-5', 'trump-10']);
+tarotBot.addTrick(1, ['diamond-3', 'diamond-5', 'trump-10', 'trump-fool']);
 // The Fool has been played (we changed a dumb card against the Fool)
-tarotBot.addTrick(2, ['trump-fool']);
-tarotBot.addTrick(1, ['heart-9']);
+tarotBot.exchangeCard(2, 1, 'heart-9', 'trump-fool');
 
 // Round 6
 tarotBot.playCard(1, 'club-5');

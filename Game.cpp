@@ -51,6 +51,11 @@ void Tarot::Game::MakeAside(int playerPosition, vector<string> aside)
 	players[playerPosition].MakeAside(aside);
 }
 
+void Tarot::Game::ExchangeCard(int playerFromPosition, int playerToPosition, string cardFrom, string cardTo)
+{
+	players[playerFromPosition].ExchangeCard(cardFrom, cardTo, &players[playerToPosition]);
+}
+
 float Tarot::Game::GetAttackersScore()
 {
 	float score = 0;;
