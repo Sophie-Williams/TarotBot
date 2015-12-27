@@ -70,22 +70,22 @@ namespace Tarot {
 		game.PlayCard(playerPosition, card);
 	}
 
-	void AddCards(const FunctionCallbackInfo<Value>& args) {
+	void ReceiveDog(const FunctionCallbackInfo<Value>& args) {
 		Isolate* isolate = args.GetIsolate();
 
 		int playerPosition = ToInt(args[0]);
 		vector<string> cards = ToStringVector(args[1]);
 
-		game.AddCards(playerPosition, cards);
+		game.ReceiveDog(playerPosition, cards);
 	}
 
-	void AddTrick(const FunctionCallbackInfo<Value>& args) {
+	void WinTheRound(const FunctionCallbackInfo<Value>& args) {
 		Isolate* isolate = args.GetIsolate();
 
 		int playerPosition = ToInt(args[0]);
 		vector<string> trick = ToStringVector(args[1]);
 
-		game.AddTrick(playerPosition, trick);
+		game.WinTheRound(playerPosition, trick);
 	}
 
 	void MakeAside(const FunctionCallbackInfo<Value>& args) {
@@ -128,8 +128,8 @@ namespace Tarot {
 		NODE_SET_METHOD(exports, "newGame", NewGame);
 		NODE_SET_METHOD(exports, "setTakerPosition", SetTakerPosition);
 		NODE_SET_METHOD(exports, "playCard", PlayCard);
-		NODE_SET_METHOD(exports, "addCards", AddCards);
-		NODE_SET_METHOD(exports, "addTrick", AddTrick);
+		NODE_SET_METHOD(exports, "receiveDog", ReceiveDog);
+		NODE_SET_METHOD(exports, "winTheRound", WinTheRound);
 		NODE_SET_METHOD(exports, "makeAside", MakeAside);
 		NODE_SET_METHOD(exports, "exchangeCard", ExchangeCard);
 		NODE_SET_METHOD(exports, "getAttackersScore", GetAttackersScore);

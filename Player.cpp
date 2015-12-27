@@ -37,13 +37,13 @@ void Tarot::Player::PlayCard(string card) {
 	RemoveCardFromHand(card);
 }
 
-void Tarot::Player::AddCards(vector<string> cards) {
+void Tarot::Player::ReceiveDog(vector<string> cards) {
 	for (unsigned int i = 0; i < cards.size(); i++) {
 		AddCardToHand(cards[i]);
 	}
 }
 
-void Tarot::Player::AddTrick(vector<string> trick) {
+void Tarot::Player::WinTheRound(vector<string> trick) {
 	for (unsigned int i = 0; i < trick.size(); i++) {
 		AddCardToTricks(trick[i]);
 	}

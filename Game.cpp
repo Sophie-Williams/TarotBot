@@ -36,14 +36,14 @@ void Tarot::Game::PlayCard(int playerPosition, string card)
 	players[playerPosition].PlayCard(card);
 }
 
-void Tarot::Game::AddCards(int playerPosition, vector<string> cards)
+void Tarot::Game::ReceiveDog(int playerPosition, vector<string> cards)
 {
-	players[playerPosition].AddCards(cards);
+	players[playerPosition].ReceiveDog(cards);
 }
 
-void Tarot::Game::AddTrick(int playerPosition, vector<string> trick)
+void Tarot::Game::WinTheRound(int playerPosition, vector<string> trick)
 {
-	players[playerPosition].AddTrick(trick);
+	players[playerPosition].WinTheRound(trick);
 }
 
 void Tarot::Game::MakeAside(int playerPosition, vector<string> aside)

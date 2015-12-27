@@ -33,10 +33,10 @@ namespace Tarot {
 			void PlayCard(int playerPosition, string card);
 
 			// Add the cards to the hand of the player
-			void AddCards(int playerPosition, vector<string> cards);
+			void ReceiveDog(int playerPosition, vector<string> cards);
 
 			// Add the cards to the tricks of the player
-			void AddTrick(int playerPosition, vector<string> trick);
+			void WinTheRound(int playerPosition, vector<string> trick);
 
 			// Takes the cards from the hand of the player and put them into the tricks
 			void MakeAside(int playerPosition, vector<string> aside);

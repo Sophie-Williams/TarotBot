@@ -39,10 +39,10 @@ namespace Tarot {
 			void PlayCard(string card);
 
 			// Adds cards into the hand
-			void AddCards(vector<string> cards);
+			void ReceiveDog(vector<string> cards);
 
 			// Adds cards into the tricks
-			void AddTrick(vector<string> trick);
+			void WinTheRound(vector<string> trick);
 
 			// Takes the cards from the hand and put them into the tricks
 			void MakeAside(vector<string> aside);
