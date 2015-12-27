@@ -15,15 +15,17 @@ var takerPosition = 2;
 tarotBot.setTakerPosition(takerPosition);
 
 // Set-up the aside
-// Take or Guard (taker make is dog)
+// Take or Guard (taker make is own aside)
 tarotBot.receiveDog(takerPosition, dog);
 tarotBot.makeAside(takerPosition, ['club-8', 'club-9', 'club-12', 'diamond-6', 'diamond-9', 'diamond-13']);
 
-// Guard Without (give dog to taker)
-///tarotBot.winTheRound(takerPosition, dog);
+// Guard Without (give dog to taker and aside it)
+//tarotBot.receiveDog(takerPosition, dog);
+//tarotBot.makeAside(takerPosition, dog);
 
-// Guard Against (give dog to any other player)
-//tarotBot.winTheRound(0, dog);
+// Guard Against (give dog to any other player (the Oth in this case) and aside it)
+//tarotBot.receiveDog(0, dog);
+//tarotBot.makeAside(0, dog);
 
 // Round 1
 tarotBot.playCard(1, 'heart-1');
