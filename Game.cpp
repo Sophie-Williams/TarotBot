@@ -60,22 +60,22 @@ void Tarot::Game::PlayCard(int playerPosition, string card)
 		if (baseCard->GetSuit() == Suit::Trump) {
 			// The player has no more trump
 			if (playedCard->GetSuit() != Suit::Trump) {
-				players[playerPosition].hasSuit[Suit::Trump] = false;
+				players[playerPosition].HasNoMoreSuit(Suit::Trump);
 			}
 			// The player has no more trump higher than the baseCard
 			else if (!playedCard->IsHigher(baseCard)) {
-				players[playerPosition].maxTrump = baseCard;
+				players[playerPosition].HasNoHigherTrump(baseCard);
 			}
 		}
 		else {
 			// The player has no more card of the baseCard's suit
 			if (playedCard->GetSuit() == Suit::Trump) {
-				players[playerPosition].hasSuit[baseCard->GetSuit()] = false;
+				players[playerPosition].HasNoMoreSuit(baseCard->GetSuit());
 			}
 			// The player has no more trump nor more card of the baseCard's suit
 			else if (playedCard->GetSuit() != baseCard->GetSuit()) {
-				players[playerPosition].hasSuit[Suit::Trump] = false;
-				players[playerPosition].hasSuit[baseCard->GetSuit()] = false;
+				players[playerPosition].HasNoMoreSuit(Suit::Trump);
+				players[playerPosition].HasNoMoreSuit(baseCard->GetSuit());
 			}
 		}
 
@@ -84,9 +84,13 @@ void Tarot::Game::PlayCard(int playerPosition, string card)
 	players[playerPosition].PlayCard(card);
 }
 
-void Tarot::Game::ReceiveDog(int playerPosition, vector<string> cards)
+void Tarot::Game::ReceiveDog(int playerPosition, vector<string> cards, bool revealed)
 {
 	players[playerPosition].ReceiveDog(cards);
+
+	if (revealed) {
+		revealedDog = cards;
+	}
 }
 
 void Tarot::Game::WinTheRound(int playerPosition, vector<string> trick)
@@ -108,7 +112,7 @@ void Tarot::Game::ExchangeCard(int playerFromPosition, int playerToPosition, str
 
 float Tarot::Game::GetAttackersScore()
 {
-	float score = 0;;
+	float score = 0;
 	for (unsigned int i = 0; i < attackers.size(); i++) {
 		score += players[attackers[i]].GetScore();
 	}

@@ -16,16 +16,15 @@ tarotBot.setTakerPosition(takerPosition);
 
 // Set-up the aside
 // Take or Guard (taker make is own aside)
-tarotBot.receiveDog(takerPosition, dog);
+tarotBot.receiveDog(takerPosition, dog, true);
 tarotBot.makeAside(takerPosition, ['club-8', 'club-9', 'club-12', 'diamond-6', 'diamond-9', 'diamond-13']);
 
 // Guard Without (give dog to taker and aside it)
-// TODO: ajouter un argument (bool) pour savoir si le chien a été rendu visible ou non, peut aider l'IA pour la distribution random des cartes (les cartes du chien n'iront pas aux autres joueurs)
-//tarotBot.receiveDog(takerPosition, dog);
+//tarotBot.receiveDog(takerPosition, dog, false);
 //tarotBot.makeAside(takerPosition, dog);
 
 // Guard Against (give dog to any other player (the 0th in this case) and aside it)
-//tarotBot.receiveDog(0, dog);
+//tarotBot.receiveDog(0, dog, false);
 //tarotBot.makeAside(0, dog);
 
 // Round 1

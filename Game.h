@@ -28,6 +28,9 @@ namespace Tarot {
 			// Defines the highest card of the current round
 			Card* highestCard;
 
+			// The dog revealed to players
+			vector<string> revealedDog;
+
 			// The current played cards
 			vector<string> cardsPlayed;
 
@@ -49,7 +52,7 @@ namespace Tarot {
 			void PlayCard(int playerPosition, string card);
 
 			// Add the cards to the hand of the player
-			void ReceiveDog(int playerPosition, vector<string> cards);
+			void ReceiveDog(int playerPosition, vector<string> cards, bool revealed);
 
 			// Add the cards to the tricks of the player
 			void WinTheRound(int playerPosition, vector<string> trick);

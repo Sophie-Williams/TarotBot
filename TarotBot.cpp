@@ -75,8 +75,9 @@ namespace Tarot {
 
 		int playerPosition = ToInt(args[0]);
 		vector<string> cards = ToStringVector(args[1]);
+		bool revealed = ToBool(args[2]);
 
-		game.ReceiveDog(playerPosition, cards);
+		game.ReceiveDog(playerPosition, cards, revealed);
 	}
 
 	void WinTheRound(const FunctionCallbackInfo<Value>& args) {
