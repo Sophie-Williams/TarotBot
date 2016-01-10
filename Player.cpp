@@ -2,6 +2,12 @@
 
 Tarot::Player::Player(vector<string> hand) {
 	this->hand = hand;
+	hasSuit[Club] = true;
+	hasSuit[Diamond] = true;
+	hasSuit[Heart] = true;
+	hasSuit[Spade] = true;
+	hasSuit[Trump] = true;
+	maxTrump = Deck::Get("trump-21");
 }
 
 Tarot::Player::~Player() {
@@ -61,4 +67,74 @@ void Tarot::Player::ExchangeCard(string cardFrom, string cardTo, Player* player)
 	player->RemoveCardFromTricks(cardTo);
 	this->AddCardToTricks(cardTo);
 	player->AddCardToTricks(cardFrom);
+}
+
+bool Tarot::Player::CanHave(Card* card) {
+	bool hasThisSuit = hasSuit[card->GetSuit()];
+
+	if (card->GetSuit() == Suit::Trump) {
+		return card->IsFool() || (hasThisSuit && card->GetRank() < maxTrump->GetRank());
+	}
+
+	return hasThisSuit;
+}
+
+bool Tarot::Player::IsPlayableCard(Card* card, Card* baseCard, Card* highestCard) {
+	/*if (card->GetSuit() == baseCard->GetSuit()) {
+		if (baseCard->GetSuit() == Suit::Trump && maxTrump) {
+			return card->GetRank() > highestCard->GetRank();
+		}
+		return true;
+	}*/
+}
+
+vector<string> Tarot::Player::GetPlayableCards(Card* baseCard, Card* highestCard) {
+	// If no base card, the player can play whatever he wants
+	if (baseCard == nullptr) {
+		return hand;
+	}
+
+	// If the player has no card of the required suit
+	if (!hasSuit[baseCard->GetSuit()]) {
+		// If the player pisses, he can play whatever he wants
+		if (!hasSuit[Suit::Trump]) {
+			return hand;
+		}
+		// Else the player must play a trump (or the fool)
+		else {
+			// A trump higher than highestCard
+			if (/* if player has trump > highestCard */) {
+
+			}
+			// Any trump
+			else {
+
+			}
+		}
+	}
+	// Else, the player must play in this suit (or the fool)
+	else {
+		if (baseCard->GetSuit() == Suit::Trump) {
+			// A trump higher than highestCard
+			if (/* if player has trump > highestCard */) {
+
+			}
+			// Any trump
+			else {
+
+			}
+		}
+		else {
+
+		}
+	}
+
+	// Else, we must loop through his hand to loop for any playable card
+	/*vector<string> playableCards;
+	for (int i = 0; i < hand.size(); i++) {
+		if (IsPlayableCard(Deck::Get(hand[i]), baseCard, highestCard)) {
+			playableCards.push_back(hand[i]);
+		}
+	}
+	return playableCards;*/
 }

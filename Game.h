@@ -1,6 +1,10 @@
 #pragma once
 #include <vector>
+#include "Card.h"
+#include "Deck.h"
 #include "Player.h"
+
+using namespace std;
 
 namespace Tarot {
 	class Game
@@ -17,6 +21,18 @@ namespace Tarot {
 
 			// The defenders into the current game
 			vector<int> defenders;
+
+			// Defines the base card of the current round
+			Card* baseCard;
+
+			// Defines the highest card of the current round
+			Card* highestCard;
+
+			// The current played cards
+			vector<string> cardsPlayed;
+
+			// The current not played cards
+			vector<string> cardsNotPlayed;
 
 		public:
 			// Player constructor

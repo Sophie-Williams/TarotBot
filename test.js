@@ -20,10 +20,11 @@ tarotBot.receiveDog(takerPosition, dog);
 tarotBot.makeAside(takerPosition, ['club-8', 'club-9', 'club-12', 'diamond-6', 'diamond-9', 'diamond-13']);
 
 // Guard Without (give dog to taker and aside it)
+// TODO: ajouter un argument (bool) pour savoir si le chien a été rendu visible ou non, peut aider l'IA pour la distribution random des cartes (les cartes du chien n'iront pas aux autres joueurs)
 //tarotBot.receiveDog(takerPosition, dog);
 //tarotBot.makeAside(takerPosition, dog);
 
-// Guard Against (give dog to any other player (the Oth in this case) and aside it)
+// Guard Against (give dog to any other player (the 0th in this case) and aside it)
 //tarotBot.receiveDog(0, dog);
 //tarotBot.makeAside(0, dog);
 
@@ -37,7 +38,7 @@ tarotBot.winTheRound(2, ['heart-1', 'heart-14', 'heart-8', 'heart-6']);
 // Round 2
 tarotBot.playCard(2, 'heart-13');
 tarotBot.playCard(3, 'heart-9');
-tarotBot.playCard(0, 'heart-6');
+tarotBot.playCard(0, 'heart-7');
 tarotBot.playCard(1, 'heart-2');
 tarotBot.winTheRound(2, ['heart-13', 'heart-9', 'heart-6', 'heart-2']);
 

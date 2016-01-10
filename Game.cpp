@@ -2,6 +2,8 @@
 
 Tarot::Game::Game(vector<string> playerHand1, vector<string> playerHand2, vector<string> playerHand3, vector<string> playerHand4)
 {
+	baseCard = nullptr;
+	highestCard = nullptr;
 	takerPosition = -1;
 	players = {
 		Player(playerHand1),
@@ -9,6 +11,9 @@ Tarot::Game::Game(vector<string> playerHand1, vector<string> playerHand2, vector
 		Player(playerHand3),
 		Player(playerHand4)
 	};
+	Deck::Foreach([this](string key, Card value) {
+		cardsNotPlayed.push_back(key);
+	});
 }
 
 Tarot::Game::Game()
@@ -33,6 +38,49 @@ void Tarot::Game::SetTakerPosition(int takerPosition)
 
 void Tarot::Game::PlayCard(int playerPosition, string card)
 {
+	// Adds the card to the played cards
+	cardsPlayed.push_back(card);
+
+	// Removes the card from the not played cards
+	cardsNotPlayed.erase(remove(cardsNotPlayed.begin(), cardsNotPlayed.end(), card), cardsNotPlayed.end());
+
+	// Defines the base card of the round
+	Card* playedCard = Deck::Get(card);
+	if (baseCard == nullptr && !playedCard->IsFool()) {
+		baseCard = playedCard;
+	}
+
+	// Defines the higher card of the round
+	if (highestCard == nullptr || playedCard->IsHigher(highestCard)) {
+		highestCard = playedCard;
+	}
+
+	// Adds usefull data about the player
+	if (!playedCard->IsFool()) {
+		if (baseCard->GetSuit() == Suit::Trump) {
+			// The player has no more trump
+			if (playedCard->GetSuit() != Suit::Trump) {
+				players[playerPosition].hasSuit[Suit::Trump] = false;
+			}
+			// The player has no more trump higher than the baseCard
+			else if (!playedCard->IsHigher(baseCard)) {
+				players[playerPosition].maxTrump = baseCard;
+			}
+		}
+		else {
+			// The player has no more card of the baseCard's suit
+			if (playedCard->GetSuit() == Suit::Trump) {
+				players[playerPosition].hasSuit[baseCard->GetSuit()] = false;
+			}
+			// The player has no more trump nor more card of the baseCard's suit
+			else if (playedCard->GetSuit() != baseCard->GetSuit()) {
+				players[playerPosition].hasSuit[Suit::Trump] = false;
+				players[playerPosition].hasSuit[baseCard->GetSuit()] = false;
+			}
+		}
+
+	}
+
 	players[playerPosition].PlayCard(card);
 }
 
@@ -44,6 +92,8 @@ void Tarot::Game::ReceiveDog(int playerPosition, vector<string> cards)
 void Tarot::Game::WinTheRound(int playerPosition, vector<string> trick)
 {
 	players[playerPosition].WinTheRound(trick);
+
+	baseCard = nullptr;
 }
 
 void Tarot::Game::MakeAside(int playerPosition, vector<string> aside)

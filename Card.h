@@ -36,6 +36,17 @@ namespace Tarot {
 
 			// Returns the card score
 			float GetScore();
+
+			// Returns True if the current card is an oudler
+			bool IsOudler();
+
+			// Returns True if the current card is the fool
+			bool IsFool();
+
+			// Returns True if the current card is equal to the given card
+			bool Equals(Card* card);
+
+			// Returns True if the current card is higher than the given card
+			bool IsHigher(Card* card);
 	};
 }
-

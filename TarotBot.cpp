@@ -110,7 +110,7 @@ namespace Tarot {
 
 	void GetAttackersScore(const FunctionCallbackInfo<Value>& args) {
 		Isolate* isolate = args.GetIsolate();
-		
+
 		Local<Number> attackersScore = Number::New(isolate, game.GetAttackersScore());
 
 		args.GetReturnValue().Set(attackersScore);

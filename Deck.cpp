@@ -85,6 +85,12 @@ map<string, Tarot::Card> Tarot::Deck::deck = {
 	{ "trump-21", Card(Trump, TwentyOne) }
 };
 
+void Tarot::Deck::Foreach(function<void(string key, Tarot::Card value)> callback) {
+	for (map<string, Card>::iterator iterator = deck.begin(); iterator != deck.end(); iterator++) {
+		callback(iterator->first, iterator->second);
+	}
+}
+
 Tarot::Card* Tarot::Deck::Get(string key) {
 	return &deck[key];
 }

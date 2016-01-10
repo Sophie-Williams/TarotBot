@@ -54,3 +54,26 @@ float Tarot::Card::GetScore()
 {
 	return score;
 }
+
+bool Tarot::Card::IsOudler()
+{
+	return (suit == Trump) && (rank == One || rank == TwentyOne || rank == Fool);
+}
+
+bool Tarot::Card::IsFool()
+{
+	return suit == Trump && rank == Fool;
+}
+
+bool Tarot::Card::Equals(Card* card)
+{
+	return this->suit == card->suit && this->rank == card->rank;
+}
+
+bool Tarot::Card::IsHigher(Card* card)
+{
+	return
+		(this->suit == card->suit && this->rank > card->rank)
+		||
+		(!this->IsFool() && this->suit == Suit::Trump && card->suit != Suit::Trump);
+}
