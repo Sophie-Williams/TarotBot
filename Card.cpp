@@ -1,10 +1,8 @@
 #include "Card.h"
 
-Tarot::Card::Card(Suit suit, Rank rank)
-{
+Tarot::Card::Card(Suit suit, Rank rank) {
 	this->suit = suit;
 	this->rank = rank;
-	
 	if (suit == Trump) {
 		if (rank == One || rank == TwentyOne || rank == Fool) {
 			this->score = 4.5;
@@ -32,46 +30,37 @@ Tarot::Card::Card(Suit suit, Rank rank)
 	}
 }
 
-Tarot::Card::Card()
-{
+Tarot::Card::Card() {
 }
 
-Tarot::Card::~Card()
-{
+Tarot::Card::~Card() {
 }
 
-Tarot::Suit Tarot::Card::GetSuit()
-{
+Tarot::Suit Tarot::Card::GetSuit() {
 	return suit;
 }
 
-Tarot::Rank Tarot::Card::GetRank()
-{
+Tarot::Rank Tarot::Card::GetRank() {
 	return rank;
 }
 
-float Tarot::Card::GetScore()
-{
+float Tarot::Card::GetScore() {
 	return score;
 }
 
-bool Tarot::Card::IsOudler()
-{
+bool Tarot::Card::IsOudler() {
 	return (suit == Trump) && (rank == One || rank == TwentyOne || rank == Fool);
 }
 
-bool Tarot::Card::IsFool()
-{
+bool Tarot::Card::IsFool() {
 	return suit == Trump && rank == Fool;
 }
 
-bool Tarot::Card::Equals(Card* card)
-{
+bool Tarot::Card::Equals(Card* card) {
 	return this->suit == card->suit && this->rank == card->rank;
 }
 
-bool Tarot::Card::IsHigher(Card* card)
-{
+bool Tarot::Card::IsHigher(Card* card) {
 	return
 		(this->suit == card->suit && this->rank > card->rank)
 		||

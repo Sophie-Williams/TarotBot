@@ -10,8 +10,7 @@
 using namespace std;
 
 namespace Tarot {
-	class Game
-	{
+	class Game {
 		private:
 			// The current round
 			int currentRound;
@@ -79,18 +78,14 @@ namespace Tarot {
 			// Add the cards to the hand of the player
 			void ReceiveDog(int playerPosition, vector<string> cards, bool revealed);
 
+			// Takes the cards from the hand of the player and put them into the tricks
+			void MakeAside(int playerPosition, vector<string> aside);
+
 			// Add the cards to the tricks of the player
 			void WinTheRound(int winnerPosition, vector<string> trick);
 
 			// Resolves the end of the game
 			void EndOfTheGame();
-
-			// Takes the cards from the hand of the player and put them into the tricks
-			void MakeAside(int playerPosition, vector<string> aside);
-
-			// Takes the card `cardFrom` from the player `playerFromPosition` tricks
-			// and exchanges it against the card `cardTo` from the player `playerToPosition` tricks
-			//void ExchangeCard(int playerFromPosition, int playerToPosition, string cardFrom, string cardTo);
 
 			// Randomly plays the current game
 			string RandomFlow();

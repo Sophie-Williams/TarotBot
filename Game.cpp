@@ -1,12 +1,6 @@
 #include "Game.h"
 
-Tarot::Game::Game(int firstPlayer, vector<string> playerHand1, vector<string> playerHand2, vector<string> playerHand3, vector<string> playerHand4)
-{
-	/*random_device rd; // initialise engine (seed)
-	mt19937 rng(rd()); // random-number engine used (Mersenne-Twister in this case)
-	uniform_int_distribution<int> rand(0, size); // random-number generator based one the engine
-	int result = rand(rng);*/
-
+Tarot::Game::Game(int firstPlayer, vector<string> playerHand1, vector<string> playerHand2, vector<string> playerHand3, vector<string> playerHand4) {
 	currentRound = 0;
 	totalRound = 18;
 	baseCard = nullptr;
@@ -26,8 +20,7 @@ Tarot::Game::Game(int firstPlayer, vector<string> playerHand1, vector<string> pl
 	});
 }
 
-Tarot::Game::Game(const Game &game)
-{
+Tarot::Game::Game(const Game &game) {
 	this->currentRound = game.currentRound;
 	this->totalRound = game.totalRound;
 	this->takerPosition = game.takerPosition;
@@ -46,16 +39,13 @@ Tarot::Game::Game(const Game &game)
 	this->cardsNotPlayed = game.cardsNotPlayed;
 }
 
-Tarot::Game::Game()
-{
+Tarot::Game::Game() {
 }
 
-Tarot::Game::~Game()
-{
+Tarot::Game::~Game() {
 }
 
-void Tarot::Game::SetTakerPosition(int takerPosition)
-{
+void Tarot::Game::SetTakerPosition(int takerPosition) {
 	this->takerPosition = takerPosition;
 	attackers = { takerPosition };
 	defenders = {};
@@ -66,8 +56,7 @@ void Tarot::Game::SetTakerPosition(int takerPosition)
 	}
 }
 
-void Tarot::Game::PlayCard(int playerPosition, string card)
-{
+void Tarot::Game::PlayCard(int playerPosition, string card) {
 	// Adds the card to the played cards
 	cardsPlayed.push_back(card);
 
@@ -137,8 +126,7 @@ void Tarot::Game::PlayCard(int playerPosition, string card)
 	}
 }
 
-void Tarot::Game::ReceiveDog(int playerPosition, vector<string> cards, bool revealed)
-{
+void Tarot::Game::ReceiveDog(int playerPosition, vector<string> cards, bool revealed) {
 	players[playerPosition].ReceiveDog(cards);
 
 	if (revealed) {
@@ -146,8 +134,11 @@ void Tarot::Game::ReceiveDog(int playerPosition, vector<string> cards, bool reve
 	}
 }
 
-void Tarot::Game::WinTheRound(int winnerPosition, vector<string> trick)
-{
+void Tarot::Game::MakeAside(int playerPosition, vector<string> aside) {
+	players[playerPosition].MakeAside(aside);
+}
+
+void Tarot::Game::WinTheRound(int winnerPosition, vector<string> trick) {
 	players[winnerPosition].WinCards(trick);
 
 	currentPosition = winnerPosition;
@@ -161,24 +152,27 @@ void Tarot::Game::WinTheRound(int winnerPosition, vector<string> trick)
 	}
 }
 
-void Tarot::Game::EndOfTheGame()
-{
+void Tarot::Game::EndOfTheGame() {
 	// Exchanges a card (dumb) from the player fromPlayerPosition with a card (fool) of the player toPlayerPosition
-	
+	string dumbCard = "";
+	int playerFromPosition;
+	int playerToPosition = owesACardTo.second;
+
+	vector<int> fromTeam = (owesACardTo.first == takerPosition) ? attackers : defenders;
+	for (int playerPosition : fromTeam) {
+		string card = players[playerPosition].GetDumbCard();
+		if (dumbCard == "" || (card != "" && Deck::Get(card)->GetScore() < Deck::Get(dumbCard)->GetScore())) {
+			dumbCard = card;
+			playerFromPosition = playerPosition;
+		}
+	}
+
+	if (dumbCard != "") {
+		players[playerFromPosition].GiveDumbCardTo(dumbCard, &players[playerToPosition]);
+	}
 }
 
-void Tarot::Game::MakeAside(int playerPosition, vector<string> aside)
-{
-	players[playerPosition].MakeAside(aside);
-}
-
-/*void Tarot::Game::ExchangeCard(int playerFromPosition, int playerToPosition, string cardFrom, string cardTo)
-{
-	players[playerFromPosition].ExchangeCard(cardFrom, cardTo, &players[playerToPosition]);
-}*/
-
-string Tarot::Game::RandomFlow()
-{
+string Tarot::Game::RandomFlow() {
 	map<string, float> scores;
 	vector<string> playableCards = players[currentPosition].GetPlayableCards(baseCard, highestCard);
 	if (playableCards.size() == 1) {
@@ -213,15 +207,13 @@ string Tarot::Game::RandomFlow()
 	return bestCard;
 }
 
-void Tarot::Game::RandomPlay()
-{
+void Tarot::Game::RandomPlay() {
 	vector<string> playableCards = players[currentPosition].GetPlayableCards(baseCard, highestCard);
 	int randomCard = rand() % playableCards.size();
 	PlayCard(currentPosition, playableCards[randomCard]);
 }
 
-float Tarot::Game::GetAttackersScore()
-{
+float Tarot::Game::GetAttackersScore() {
 	float score = 0;
 	for (unsigned int i = 0; i < attackers.size(); i++) {
 		score += players[attackers[i]].GetScore();
@@ -229,8 +221,7 @@ float Tarot::Game::GetAttackersScore()
 	return score;
 }
 
-float Tarot::Game::GetDefendersScore()
-{
+float Tarot::Game::GetDefendersScore() {
 	float score = 0;;
 	for (unsigned int i = 0; i < defenders.size(); i++) {
 		score += players[defenders[i]].GetScore();

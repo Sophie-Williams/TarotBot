@@ -53,6 +53,17 @@ bool Tarot::Player::HasHigherTrump(Card* trump) {
 
 void Tarot::Player::AddCardToHand(string card) {
 	hand.push_back(card);
+
+	// Updates private player statistics
+	Card* cardInDog = Deck::Get(card);
+	if (!cardInDog->IsFool()) {
+		// Increases suit length
+		suitLength[cardInDog->GetSuit()]++;
+		if (cardInDog->GetSuit() == Suit::Trump) {
+			// Adds to sortedTrumps
+			AddCardToSortedTrumps(card);
+		}
+	}
 }
 
 void Tarot::Player::AddCardToTricks(string card) {
@@ -66,6 +77,17 @@ void Tarot::Player::AddCardToSortedTrumps(string card) {
 void Tarot::Player::RemoveCardFromHand(string card) {
 	// See "Erase-remove idiom" : http://stackoverflow.com/questions/3385229/c-erase-vector-element-by-value-rather-than-by-position
 	hand.erase(remove(hand.begin(), hand.end(), card), hand.end());
+
+	// Updates private player statistics
+	Card* cardPlayed = Deck::Get(card);
+	if (!cardPlayed->IsFool()) {
+		// Reduces suit length
+		suitLength[cardPlayed->GetSuit()]--;
+		if (cardPlayed->GetSuit() == Suit::Trump) {
+			// Removes from sortedTrumps
+			RemoveCardFromSortedTrumps(card);
+		}
+	}
 }
 
 void Tarot::Player::RemoveCardFromTricks(string card) {
@@ -88,55 +110,23 @@ float Tarot::Player::GetScore() {
 
 void Tarot::Player::PlayCard(string card) {
 	RemoveCardFromHand(card);
-
-	// Updates private player statistics
-	Card* cardPlayed = Deck::Get(card);
-	if (!cardPlayed->IsFool()) {
-		// Reduces suit length
-		suitLength[cardPlayed->GetSuit()]--;
-		if (cardPlayed->GetSuit() == Suit::Trump) {
-			// Removes from sortedTrumps
-			RemoveCardFromSortedTrumps(card);
-		}
-	}
 }
 
-// TODO: rename "cards" with "dog"
-void Tarot::Player::ReceiveDog(vector<string> cards) {
-	for (unsigned int i = 0; i < cards.size(); i++) {
-		AddCardToHand(cards[i]);
-
-		// Updates private player statistics
-		Card* cardReceived = Deck::Get(cards[i]);
-		if (!cardReceived->IsFool()) {
-			// Increases suit length
-			suitLength[cardReceived->GetSuit()]++;
-			if (cardReceived->GetSuit() == Suit::Trump) {
-				// Adds to sortedTrumps
-				AddCardToSortedTrumps(cards[i]);
-			}
-		}
-		sort(sortedTrumps.begin(), sortedTrumps.end(), [](string trumpKey1, string trumpKey2) {
-			return Deck::Get(trumpKey1)->GetRank() < Deck::Get(trumpKey2)->GetRank();
-		});
+void Tarot::Player::ReceiveDog(vector<string> dog) {
+	for (unsigned int i = 0; i < dog.size(); i++) {
+		AddCardToHand(dog[i]);
 	}
+
+	// Resorts the sortedTrumps
+	sort(sortedTrumps.begin(), sortedTrumps.end(), [](string trumpKey1, string trumpKey2) {
+		return Deck::Get(trumpKey1)->GetRank() < Deck::Get(trumpKey2)->GetRank();
+	});
 }
 
 void Tarot::Player::MakeAside(vector<string> aside) {
 	for (unsigned int i = 0; i < aside.size(); i++) {
 		RemoveCardFromHand(aside[i]);
 		AddCardToTricks(aside[i]);
-
-		// Updates private player statistics
-		Card* cardAside = Deck::Get(aside[i]);
-		if (!cardAside->IsFool()) {
-			// Reduces suit length
-			suitLength[cardAside->GetSuit()]--;
-			if (cardAside->GetSuit() == Suit::Trump) {
-				// Removes from sortedTrumps
-				RemoveCardFromSortedTrumps(aside[i]);
-			}
-		}
 	}
 }
 
@@ -146,12 +136,23 @@ void Tarot::Player::WinCards(vector<string> trick) {
 	}
 }
 
-/*void Tarot::Player::ExchangeCard(string cardFrom, string cardTo, Player* player) {
-	this->RemoveCardFromTricks(cardFrom);
-	player->RemoveCardFromTricks(cardTo);
-	this->AddCardToTricks(cardTo);
-	player->AddCardToTricks(cardFrom);
-}*/
+string Tarot::Player::GetDumbCard() {
+	string dumbCard = "";
+	for (string card : tricks) {
+		if (dumbCard == "" || Deck::Get(card)->GetScore() < Deck::Get(dumbCard)->GetScore()) {
+			dumbCard = card;
+			if (Deck::Get(dumbCard)->GetScore() == 0.5) {
+				return dumbCard;
+			}
+		}
+	}
+	return dumbCard;
+}
+
+void Tarot::Player::GiveDumbCardTo(string dumbCard, Player* player) {
+	this->RemoveCardFromTricks(dumbCard);
+	player->AddCardToTricks(dumbCard);
+}
 
 bool Tarot::Player::CanHave(Card* card) {
 	bool canHaveThisSuit = CanHaveSuit(card->GetSuit());

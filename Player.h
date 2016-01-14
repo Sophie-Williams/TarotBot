@@ -7,8 +7,7 @@
 using namespace std;
 
 namespace Tarot {
-	class Player
-	{
+	class Player {
 		private:
 			// The hand of the player into the current game
 			vector<string> hand;
@@ -67,7 +66,7 @@ namespace Tarot {
 			void PlayCard(string card);
 
 			// Adds cards into the hand
-			void ReceiveDog(vector<string> cards);
+			void ReceiveDog(vector<string> dog);
 
 			// Takes the cards from the hand and put them into the tricks
 			void MakeAside(vector<string> aside);
@@ -75,9 +74,11 @@ namespace Tarot {
 			// Adds cards into the tricks
 			void WinCards(vector<string> trick);
 
-			// Takes the card `cardFrom` from the player tricks
-			// and exchanges it against the card `cardTo` from the other player tricks
-			//void ExchangeCard(string cardFrom, string cardTo, Player* player);
+			// Returns the least valuable card of the tricks (or empty string if not card)
+			string GetDumbCard();
+
+			// Takes the `dumbCard` from the current player tricks and add it to the `player` tricks (needed to exchange the fool against a dumb card)
+			void GiveDumbCardTo(string dumbCard, Player* player);
 
 
 			// Returns True if the player can have this card in his hand (based on public statistics)

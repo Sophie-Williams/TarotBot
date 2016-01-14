@@ -8,8 +8,7 @@ namespace Tarot {
 	// Defines all the card ranks into the Tarot game
 	enum Rank { Fool, One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve, Thirteen, Fourteen, Fifteen, Sixteen, Seventeen, Eighteen, Nineteen, Twenty, TwentyOne, Jack, Knight, Queen, King };
 	
-	class Card
-	{
+	class Card {
 		private:
 			// The current card suit
 			Suit suit;
