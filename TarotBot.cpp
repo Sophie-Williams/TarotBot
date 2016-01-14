@@ -45,12 +45,13 @@ namespace Tarot {
 	void NewGame(const FunctionCallbackInfo<Value>& args) {
 		Isolate* isolate = args.GetIsolate();
 
+		int firstPlayer = ToInt(args[0]);
 		vector<vector<string>> playersHands = vector<vector<string>>(4);
-		for (unsigned int i = 0; i < 4; i++) {
-			playersHands[i] = ToStringVector(args[i]);
+		for (unsigned int i = 1; i < 5; i++) {
+			playersHands[i - 1] = ToStringVector(args[i]);
 		}
 
-		game = Game(playersHands[0], playersHands[1], playersHands[2], playersHands[3]);
+		game = Game(firstPlayer, playersHands[0], playersHands[1], playersHands[2], playersHands[3]);
 	}
 
 	void SetTakerPosition(const FunctionCallbackInfo<Value>& args) {
@@ -80,14 +81,14 @@ namespace Tarot {
 		game.ReceiveDog(playerPosition, cards, revealed);
 	}
 
-	void WinTheRound(const FunctionCallbackInfo<Value>& args) {
+	/*void WinTheRound(const FunctionCallbackInfo<Value>& args) {
 		Isolate* isolate = args.GetIsolate();
 
 		int playerPosition = ToInt(args[0]);
 		vector<string> trick = ToStringVector(args[1]);
 
 		game.WinTheRound(playerPosition, trick);
-	}
+	}*/
 
 	void MakeAside(const FunctionCallbackInfo<Value>& args) {
 		Isolate* isolate = args.GetIsolate();
@@ -98,7 +99,7 @@ namespace Tarot {
 		game.MakeAside(playerPosition, aside);
 	}
 
-	void ExchangeCard(const FunctionCallbackInfo<Value>& args) {
+	/*void ExchangeCard(const FunctionCallbackInfo<Value>& args) {
 		Isolate* isolate = args.GetIsolate();
 
 		int playerFromPosition = ToInt(args[0]);
@@ -107,6 +108,14 @@ namespace Tarot {
 		string cardTo = ToString(args[3]);
 
 		game.ExchangeCard(playerFromPosition, playerToPosition, cardFrom, cardTo);
+	}*/
+
+	void RandomFlow(const FunctionCallbackInfo<Value>& args) {
+		Isolate* isolate = args.GetIsolate();
+
+		Local<String> bestCard = String::NewFromUtf8(isolate, game.RandomFlow().c_str());
+
+		args.GetReturnValue().Set(bestCard);
 	}
 
 	void GetAttackersScore(const FunctionCallbackInfo<Value>& args) {
@@ -130,9 +139,10 @@ namespace Tarot {
 		NODE_SET_METHOD(exports, "setTakerPosition", SetTakerPosition);
 		NODE_SET_METHOD(exports, "playCard", PlayCard);
 		NODE_SET_METHOD(exports, "receiveDog", ReceiveDog);
-		NODE_SET_METHOD(exports, "winTheRound", WinTheRound);
+		//NODE_SET_METHOD(exports, "winTheRound", WinTheRound);
 		NODE_SET_METHOD(exports, "makeAside", MakeAside);
-		NODE_SET_METHOD(exports, "exchangeCard", ExchangeCard);
+		//NODE_SET_METHOD(exports, "exchangeCard", ExchangeCard);
+		NODE_SET_METHOD(exports, "randomFlow", RandomFlow);
 		NODE_SET_METHOD(exports, "getAttackersScore", GetAttackersScore);
 		NODE_SET_METHOD(exports, "getDefendersScore", GetDefendersScore);
 	}

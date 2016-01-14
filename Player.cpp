@@ -31,6 +31,15 @@ Tarot::Player::Player(vector<string> hand) {
 	canHaveMaxTrump = Deck::Get("trump-21");
 }
 
+Tarot::Player::Player(const Player &player) {
+	this->hand = player.hand;
+	this->tricks = player.tricks;
+	this->suitLength = player.suitLength;
+	this->sortedTrumps = player.sortedTrumps;
+	this->canHaveSuit = player.canHaveSuit;
+	this->canHaveMaxTrump = player.canHaveMaxTrump;
+}
+
 Tarot::Player::~Player() {
 }
 
@@ -48,6 +57,10 @@ void Tarot::Player::AddCardToHand(string card) {
 
 void Tarot::Player::AddCardToTricks(string card) {
 	tricks.push_back(card);
+}
+
+void Tarot::Player::AddCardToSortedTrumps(string card) {
+	sortedTrumps.push_back(card);
 }
 
 void Tarot::Player::RemoveCardFromHand(string card) {
@@ -88,15 +101,24 @@ void Tarot::Player::PlayCard(string card) {
 	}
 }
 
+// TODO: rename "cards" with "dog"
 void Tarot::Player::ReceiveDog(vector<string> cards) {
 	for (unsigned int i = 0; i < cards.size(); i++) {
 		AddCardToHand(cards[i]);
-	}
-}
 
-void Tarot::Player::WinTheRound(vector<string> trick) {
-	for (unsigned int i = 0; i < trick.size(); i++) {
-		AddCardToTricks(trick[i]);
+		// Updates private player statistics
+		Card* cardReceived = Deck::Get(cards[i]);
+		if (!cardReceived->IsFool()) {
+			// Increases suit length
+			suitLength[cardReceived->GetSuit()]++;
+			if (cardReceived->GetSuit() == Suit::Trump) {
+				// Adds to sortedTrumps
+				AddCardToSortedTrumps(cards[i]);
+			}
+		}
+		sort(sortedTrumps.begin(), sortedTrumps.end(), [](string trumpKey1, string trumpKey2) {
+			return Deck::Get(trumpKey1)->GetRank() < Deck::Get(trumpKey2)->GetRank();
+		});
 	}
 }
 
@@ -104,15 +126,32 @@ void Tarot::Player::MakeAside(vector<string> aside) {
 	for (unsigned int i = 0; i < aside.size(); i++) {
 		RemoveCardFromHand(aside[i]);
 		AddCardToTricks(aside[i]);
+
+		// Updates private player statistics
+		Card* cardAside = Deck::Get(aside[i]);
+		if (!cardAside->IsFool()) {
+			// Reduces suit length
+			suitLength[cardAside->GetSuit()]--;
+			if (cardAside->GetSuit() == Suit::Trump) {
+				// Removes from sortedTrumps
+				RemoveCardFromSortedTrumps(aside[i]);
+			}
+		}
 	}
 }
 
-void Tarot::Player::ExchangeCard(string cardFrom, string cardTo, Player* player) {
+void Tarot::Player::WinCards(vector<string> trick) {
+	for (unsigned int i = 0; i < trick.size(); i++) {
+		AddCardToTricks(trick[i]);
+	}
+}
+
+/*void Tarot::Player::ExchangeCard(string cardFrom, string cardTo, Player* player) {
 	this->RemoveCardFromTricks(cardFrom);
 	player->RemoveCardFromTricks(cardTo);
 	this->AddCardToTricks(cardTo);
 	player->AddCardToTricks(cardFrom);
-}
+}*/
 
 bool Tarot::Player::CanHave(Card* card) {
 	bool canHaveThisSuit = CanHaveSuit(card->GetSuit());
@@ -160,7 +199,7 @@ pair<string, Tarot::Card*> Tarot::Player::GetPlayConstraints(Card* baseCard, Car
 			}
 			// Any trump
 			else {
-				return pair<string, Card*>("anyCardsInSameSuit", highestCard);
+				return pair<string, Card*>("anyTrumps", nullptr);
 			}
 		}
 	}
@@ -172,27 +211,32 @@ pair<string, Tarot::Card*> Tarot::Player::GetPlayConstraints(Card* baseCard, Car
 		}
 		// Any card of this suit
 		else {
-			return pair<string, Card*>("anyCardsInSameSuit", baseCard);
+			return pair<string, Card*>("anyCardsInSuit", baseCard);
 		}
 	}
 }
 
 vector<string> Tarot::Player::GetPlayableCards(Card* baseCard, Card* highestCard) {
 	pair<string, Card*> playConstraints = GetPlayConstraints(baseCard, highestCard);
+	if (playConstraints.first == "anyCards") {
+		return hand;
+	}
+
 	vector<string> playableCards;
 	for (string cardKey : hand) {
 		Card* card = Deck::Get(cardKey);
 		if (
-			(playConstraints.first == "anyCards")
-			||
 			(card->IsFool())
+			||
+			(playConstraints.first == "anyTrumps" && card->GetSuit() == Suit::Trump)
 			||
 			(playConstraints.first == "trumpsHigherThan" && card->GetSuit() == Suit::Trump && card->IsHigher(playConstraints.second))
 			||
-			(playConstraints.first == "anyCardsInSameSuit" && card->GetSuit() == playConstraints.second->GetSuit())
+			(playConstraints.first == "anyCardsInSuit" && card->GetSuit() == playConstraints.second->GetSuit())
 		) {
 			playableCards.push_back(cardKey);
 		}
 	}
+
 	return playableCards;
 }

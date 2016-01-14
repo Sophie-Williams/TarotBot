@@ -34,11 +34,14 @@ namespace Tarot {
 			// Returns True if the player has a trump higher than this trump in his hand (based on private statistics)
 			bool HasHigherTrump(Card* trump);
 
-			// Adds a card from the hand
+			// Adds a card to the hand
 			void AddCardToHand(string card);
 
-			// Adds a card from the tricks
+			// Adds a card to the tricks
 			void AddCardToTricks(string card);
+
+			// Adds a card to the sorted trumps
+			void AddCardToSortedTrumps(string card);
 
 			// Removes a card from the hand
 			void RemoveCardFromHand(string card);
@@ -50,9 +53,9 @@ namespace Tarot {
 			void RemoveCardFromSortedTrumps(string card);
 
 		public:
-
 			// Player constructor
 			Player(vector<string> hand);
+			Player(const Player &player);
 
 			// Player destructor
 			~Player();
@@ -66,15 +69,15 @@ namespace Tarot {
 			// Adds cards into the hand
 			void ReceiveDog(vector<string> cards);
 
-			// Adds cards into the tricks
-			void WinTheRound(vector<string> trick);
-
 			// Takes the cards from the hand and put them into the tricks
 			void MakeAside(vector<string> aside);
 
+			// Adds cards into the tricks
+			void WinCards(vector<string> trick);
+
 			// Takes the card `cardFrom` from the player tricks
 			// and exchanges it against the card `cardTo` from the other player tricks
-			void ExchangeCard(string cardFrom, string cardTo, Player* player);
+			//void ExchangeCard(string cardFrom, string cardTo, Player* player);
 
 
 			// Returns True if the player can have this card in his hand (based on public statistics)
