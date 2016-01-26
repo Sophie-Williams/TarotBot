@@ -24,6 +24,9 @@ namespace Tarot {
 			// Defines which suits the player can have (based on public statistics)
 			map<Suit, bool> canHaveSuit;
 
+			// Defines the lenght of each suit of the player (based on public statistics)
+			map<Suit, int> suitPlayedLength;
+
 			// Defines the higher trump the player can have (based on public statistics)
 			Card* canHaveMaxTrump;
 
@@ -54,10 +57,9 @@ namespace Tarot {
 		public:
 			// Player constructor
 			Player(vector<string> hand);
-			Player(const Player &player);
 
-			// Player destructor
-			~Player();
+			// Player cloning constructor
+			Player(const Player &player);
 
 			// Returns the current total score of the player
 			float GetScore();
@@ -93,8 +95,20 @@ namespace Tarot {
 			// Defines the fact that the player has no more card of this suit (based on public statistics)
 			void HasNoMoreSuit(Suit suit);
 
+			// Defines the fact that the player has already (or not) played this suit (based on public statistics)
+			bool HasPlayedSuit(Suit suit);
+
+			// Defines the fact that the player has played this suit just one time (based on public statistics)
+			bool HasPlayedSuitOnce(Suit suit);
+
 			// Defines the fact that the player has no higher trump than this trump (based on public statistics)
 			void HasNoHigherTrump(Card* trump);
+
+			// Returns the number of cuts the player has (based on public statistics)
+			int GetCutsCount();
+
+			// Returns the number of singletons the player has (based on public statistics)
+			int GetSingletonsCount();
 
 
 			// Returns the play constraints of the player relative to the baseCard and highestCard cards (based on private statistics)

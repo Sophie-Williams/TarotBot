@@ -10,8 +10,38 @@
 using namespace std;
 
 namespace Tarot {
+
+	// Defines all the card suits into the Tarot game
+	const enum Bid { Pass, Take, Guard, GuardWithout, GuardAgainst };
+
 	class Game {
 		private:
+			// A structure that defines the MinMax Algorithm Tree
+			class Node {
+				private:
+					// Currente state of the Node (defines the root of the current tree)
+					Game* state;
+
+					// Defines the child nodes (by card's key)
+					vector<string> children;
+
+					// Defines the current max score
+					float maxScore;
+
+					// Defines the child with the current max score
+					string maxChild;
+
+				public:
+					// Node constructor
+					Node(Game* state);
+
+					// Returns the child with the max score
+					string GetMax();
+			};
+
+			// Number of player
+			const int playersCount = 4;
+
 			// The current round
 			int currentRound;
 
@@ -24,8 +54,11 @@ namespace Tarot {
 			// The current player position into the current game
 			int currentPosition;
 
+			// Defines the take level
+			Bid takeLevel;
+
 			// The players into the current game
-			vector<Player> players;
+			vector<Player*> players;
 
 			// The attackers into the current game
 			vector<int> attackers;
@@ -45,6 +78,9 @@ namespace Tarot {
 			// Defines if the current round has the fool
 			bool currentTrickHasFool;
 
+			// Defines if the taker already played
+			bool takerHasPlayed;
+
 			// Defines which player needs to exchange a dumb card against his fool whith which player
 			pair<int, int> owesACardTo;
 
@@ -60,13 +96,17 @@ namespace Tarot {
 			// The current not played cards
 			vector<string> cardsNotPlayed;
 
-		public:
-			// Player constructor
-			Game(int firstPlayer, vector<string> playerHand1, vector<string> playerHand2, vector<string> playerHand3, vector<string> playerHand4);
-			Game(const Game &game);
-			Game();
+			// The current played colors
+			map<Suit, bool> colorsPlayed;
 
-			// Player destructor
+		public:
+			// Game constructor
+			Game(int firstPlayer, vector<string> playerHand1, vector<string> playerHand2, vector<string> playerHand3, vector<string> playerHand4);
+
+			// Game cloning constructor
+			Game(const Game &game);
+
+			// Game destructor
 			~Game();
 
 			// Defines the taker position into the current game (also defines the attackers and defenders teams)
@@ -76,7 +116,7 @@ namespace Tarot {
 			void PlayCard(int playerPosition, string card);
 
 			// Add the cards to the hand of the player
-			void ReceiveDog(int playerPosition, vector<string> cards, bool revealed);
+			void ReceiveDog(int playerPosition, vector<string> cards, Bid takeLevel);
 
 			// Takes the cards from the hand of the player and put them into the tricks
 			void MakeAside(int playerPosition, vector<string> aside);
@@ -87,17 +127,28 @@ namespace Tarot {
 			// Resolves the end of the game
 			void EndOfTheGame();
 
-			// Randomly plays the current game
-			string RandomFlow();
-
-			// Randomly play one move
-			void RandomPlay();
-
 			// returns the total current score of the attackers
 			float GetAttackersScore();
 
 			// returns the total current score of the defenders
 			float GetDefendersScore();
+
+
+
+			// Returns the best next card to play (using min-max algorithm)
+			string GetNextMinMaxCard();
+
+			// Returns the best next card to play (using a meta-heuristic for the fool)
+			string GetNextFoolHeuristicCard();
+
+			// Returns the best next card to play (using a meta-heuristic for trumps)
+			string GetNextTrumpHeuristicCard();
+
+			// Returns the best next card to play (using a meta-heuristic to find taker cuts)
+			string GetNextCutHeuristicCard();
+
+			// Returns the best next card to play (using a meta-heuristic to find taker singletons)
+			string GetNextSingletonHeuristicCard();
 	};
 }
 

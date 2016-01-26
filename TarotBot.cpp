@@ -14,7 +14,7 @@ namespace Tarot {
 	using v8::Number;
 	using namespace std;
 
-	Game game;
+	Game* game;
 
 	int ToInt(Local<Value> arg) {
 		return (int)arg->IntegerValue();
@@ -34,9 +34,9 @@ namespace Tarot {
 
 	vector<string> ToStringVector(Local<Value> arg) {
 		Local<Array> inputArray = Local<Array>::Cast(arg);
-		unsigned int inputLength = inputArray->Length();
+		int inputLength = inputArray->Length();
 		vector<string> result = vector<string>(inputLength);
-		for (unsigned int i = 0; i < inputLength; i++) {
+		for (int i = 0; i < inputLength; i++) {
 			result[i] = ToString(inputArray->Get(i));
 		}
 		return result;
@@ -47,11 +47,11 @@ namespace Tarot {
 
 		int firstPlayer = ToInt(args[0]);
 		vector<vector<string>> playersHands = vector<vector<string>>(4);
-		for (unsigned int i = 1; i < 5; i++) {
+		for (int i = 1; i < 5; i++) {
 			playersHands[i - 1] = ToStringVector(args[i]);
 		}
 
-		game = Game(firstPlayer, playersHands[0], playersHands[1], playersHands[2], playersHands[3]);
+		game = new Game(firstPlayer, playersHands[0], playersHands[1], playersHands[2], playersHands[3]);
 	}
 
 	void SetTakerPosition(const FunctionCallbackInfo<Value>& args) {
@@ -59,7 +59,7 @@ namespace Tarot {
 
 		int takerPosition = ToInt(args[0]);
 
-		game.SetTakerPosition(takerPosition);
+		game->SetTakerPosition(takerPosition);
 	}
 
 	void PlayCard(const FunctionCallbackInfo<Value>& args) {
@@ -68,7 +68,7 @@ namespace Tarot {
 		int playerPosition = ToInt(args[0]);
 		string card = ToString(args[1]);
 
-		game.PlayCard(playerPosition, card);
+		game->PlayCard(playerPosition, card);
 	}
 
 	void ReceiveDog(const FunctionCallbackInfo<Value>& args) {
@@ -76,9 +76,27 @@ namespace Tarot {
 
 		int playerPosition = ToInt(args[0]);
 		vector<string> cards = ToStringVector(args[1]);
-		bool revealed = ToBool(args[2]);
+		int takeLevelId = ToInt(args[2]);
+		Bid takeLevel;
+		switch (takeLevelId) {
+			case 0:
+				takeLevel = Pass;
+				break;
+			case 1:
+				takeLevel = Take;
+				break;
+			case 2:
+				takeLevel = Guard;
+				break;
+			case 3:
+				takeLevel = GuardWithout;
+				break;
+			case 4:
+				takeLevel = GuardAgainst;
+				break;
+		}
 
-		game.ReceiveDog(playerPosition, cards, revealed);
+		game->ReceiveDog(playerPosition, cards, takeLevel);
 	}
 
 	void MakeAside(const FunctionCallbackInfo<Value>& args) {
@@ -87,13 +105,45 @@ namespace Tarot {
 		int playerPosition = ToInt(args[0]);
 		vector<string> aside = ToStringVector(args[1]);
 
-		game.MakeAside(playerPosition, aside);
+		game->MakeAside(playerPosition, aside);
 	}
 
-	void RandomFlow(const FunctionCallbackInfo<Value>& args) {
+	void GetNextMinMaxCard(const FunctionCallbackInfo<Value>& args) {
 		Isolate* isolate = args.GetIsolate();
 
-		Local<String> bestCard = String::NewFromUtf8(isolate, game.RandomFlow().c_str());
+		Local<String> bestCard = String::NewFromUtf8(isolate, game->GetNextMinMaxCard().c_str());
+
+		args.GetReturnValue().Set(bestCard);
+	}
+
+	void GetNextFoolHeuristicCard(const FunctionCallbackInfo<Value>& args) {
+		Isolate* isolate = args.GetIsolate();
+
+		Local<String> bestCard = String::NewFromUtf8(isolate, game->GetNextFoolHeuristicCard().c_str());
+
+		args.GetReturnValue().Set(bestCard);
+	}
+
+	void GetNextTrumpHeuristicCard(const FunctionCallbackInfo<Value>& args) {
+		Isolate* isolate = args.GetIsolate();
+
+		Local<String> bestCard = String::NewFromUtf8(isolate, game->GetNextTrumpHeuristicCard().c_str());
+
+		args.GetReturnValue().Set(bestCard);
+	}
+
+	void GetNextCutHeuristicCard(const FunctionCallbackInfo<Value>& args) {
+		Isolate* isolate = args.GetIsolate();
+
+		Local<String> bestCard = String::NewFromUtf8(isolate, game->GetNextCutHeuristicCard().c_str());
+
+		args.GetReturnValue().Set(bestCard);
+	}
+
+	void GetNextSingletonHeuristicCard(const FunctionCallbackInfo<Value>& args) {
+		Isolate* isolate = args.GetIsolate();
+
+		Local<String> bestCard = String::NewFromUtf8(isolate, game->GetNextSingletonHeuristicCard().c_str());
 
 		args.GetReturnValue().Set(bestCard);
 	}
@@ -101,7 +151,7 @@ namespace Tarot {
 	void GetAttackersScore(const FunctionCallbackInfo<Value>& args) {
 		Isolate* isolate = args.GetIsolate();
 
-		Local<Number> attackersScore = Number::New(isolate, game.GetAttackersScore());
+		Local<Number> attackersScore = Number::New(isolate, game->GetAttackersScore());
 
 		args.GetReturnValue().Set(attackersScore);
 	}
@@ -109,7 +159,7 @@ namespace Tarot {
 	void GetDefendersScore(const FunctionCallbackInfo<Value>& args) {
 		Isolate* isolate = args.GetIsolate();
 
-		Local<Number> defendersScore = Number::New(isolate, game.GetDefendersScore());
+		Local<Number> defendersScore = Number::New(isolate, game->GetDefendersScore());
 
 		args.GetReturnValue().Set(defendersScore);
 	}
@@ -120,7 +170,11 @@ namespace Tarot {
 		NODE_SET_METHOD(exports, "playCard", PlayCard);
 		NODE_SET_METHOD(exports, "receiveDog", ReceiveDog);
 		NODE_SET_METHOD(exports, "makeAside", MakeAside);
-		NODE_SET_METHOD(exports, "randomFlow", RandomFlow);
+		NODE_SET_METHOD(exports, "getNextMinMaxCard", GetNextMinMaxCard);
+		NODE_SET_METHOD(exports, "getNextFoolHeuristicCard", GetNextFoolHeuristicCard);
+		NODE_SET_METHOD(exports, "getNextTrumpHeuristicCard", GetNextTrumpHeuristicCard);
+		NODE_SET_METHOD(exports, "getNextCutHeuristicCard", GetNextCutHeuristicCard);
+		NODE_SET_METHOD(exports, "getNextSingletonHeuristicCard", GetNextSingletonHeuristicCard);
 		NODE_SET_METHOD(exports, "getAttackersScore", GetAttackersScore);
 		NODE_SET_METHOD(exports, "getDefendersScore", GetDefendersScore);
 	}

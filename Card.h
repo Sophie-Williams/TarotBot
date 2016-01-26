@@ -3,11 +3,13 @@
 namespace Tarot {
 
 	// Defines all the card suits into the Tarot game
-	enum Suit { Club, Diamond, Heart, Spade, Trump };
+	const enum Suit { Club, Diamond, Heart, Spade, Trump };
+	static const Suit Colors[] = { Club, Diamond, Heart, Spade };
+	static const Suit Suits[] = { Club, Diamond, Heart, Spade, Trump };
 
 	// Defines all the card ranks into the Tarot game
 	enum Rank { Fool, One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve, Thirteen, Fourteen, Fifteen, Sixteen, Seventeen, Eighteen, Nineteen, Twenty, TwentyOne, Jack, Knight, Queen, King };
-	
+
 	class Card {
 		private:
 			// The current card suit
@@ -22,10 +24,6 @@ namespace Tarot {
 		public:
 			// Card constructor
 			Card(Suit suit, Rank rank);
-			Card();
-
-			// Card destructor
-			~Card();
 
 			// Returns the card suit
 			Suit GetSuit();
@@ -41,6 +39,12 @@ namespace Tarot {
 
 			// Returns True if the current card is the fool
 			bool IsFool();
+
+			// Returns True if the current card is the petit
+			bool IsPetit();
+
+			// Returns True if the current card is the world
+			bool IsWorld();
 
 			// Returns True if the current card is equal to the given card
 			bool Equals(Card* card);

@@ -1,4 +1,7 @@
 #include "Card.h"
+#include <vector>
+
+using namespace std;
 
 Tarot::Card::Card(Suit suit, Rank rank) {
 	this->suit = suit;
@@ -30,12 +33,6 @@ Tarot::Card::Card(Suit suit, Rank rank) {
 	}
 }
 
-Tarot::Card::Card() {
-}
-
-Tarot::Card::~Card() {
-}
-
 Tarot::Suit Tarot::Card::GetSuit() {
 	return suit;
 }
@@ -56,6 +53,14 @@ bool Tarot::Card::IsFool() {
 	return suit == Trump && rank == Fool;
 }
 
+bool Tarot::Card::IsPetit() {
+	return suit == Trump && rank == One;
+}
+
+bool Tarot::Card::IsWorld() {
+	return suit == Trump && rank == TwentyOne;
+}
+
 bool Tarot::Card::Equals(Card* card) {
 	return this->suit == card->suit && this->rank == card->rank;
 }
@@ -64,5 +69,5 @@ bool Tarot::Card::IsHigher(Card* card) {
 	return
 		(this->suit == card->suit && this->rank > card->rank)
 		||
-		(!this->IsFool() && this->suit == Suit::Trump && card->suit != Suit::Trump);
+		(!this->IsFool() && this->suit == Trump && card->suit != Trump);
 }

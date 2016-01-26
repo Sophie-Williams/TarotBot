@@ -13,7 +13,7 @@ Tarot::Player::Player(vector<string> hand) {
 		Card* card = Deck::Get(cardKey);
 		if (!card->IsFool()) {
 			suitLength[card->GetSuit()]++;
-			if (card->GetSuit() == Suit::Trump) {
+			if (card->GetSuit() == Trump) {
 				sortedTrumps.push_back(cardKey);
 			}
 		}
@@ -28,6 +28,11 @@ Tarot::Player::Player(vector<string> hand) {
 	canHaveSuit[Heart] = true;
 	canHaveSuit[Spade] = true;
 	canHaveSuit[Trump] = true; // Excluding the fool
+	suitPlayedLength[Club] = 0;
+	suitPlayedLength[Diamond] = 0;
+	suitPlayedLength[Heart] = 0;
+	suitPlayedLength[Spade] = 0;
+	suitPlayedLength[Trump] = 0; // Excluding the fool
 	canHaveMaxTrump = Deck::Get("trump-21");
 }
 
@@ -38,9 +43,6 @@ Tarot::Player::Player(const Player &player) {
 	this->sortedTrumps = player.sortedTrumps;
 	this->canHaveSuit = player.canHaveSuit;
 	this->canHaveMaxTrump = player.canHaveMaxTrump;
-}
-
-Tarot::Player::~Player() {
 }
 
 bool Tarot::Player::HasSuit(Suit suit) {
@@ -59,7 +61,7 @@ void Tarot::Player::AddCardToHand(string card) {
 	if (!cardInDog->IsFool()) {
 		// Increases suit length
 		suitLength[cardInDog->GetSuit()]++;
-		if (cardInDog->GetSuit() == Suit::Trump) {
+		if (cardInDog->GetSuit() == Trump) {
 			// Adds to sortedTrumps
 			AddCardToSortedTrumps(card);
 		}
@@ -83,7 +85,7 @@ void Tarot::Player::RemoveCardFromHand(string card) {
 	if (!cardPlayed->IsFool()) {
 		// Reduces suit length
 		suitLength[cardPlayed->GetSuit()]--;
-		if (cardPlayed->GetSuit() == Suit::Trump) {
+		if (cardPlayed->GetSuit() == Trump) {
 			// Removes from sortedTrumps
 			RemoveCardFromSortedTrumps(card);
 		}
@@ -102,7 +104,7 @@ void Tarot::Player::RemoveCardFromSortedTrumps(string card) {
 
 float Tarot::Player::GetScore() {
 	float score = 0;
-	for (unsigned int i = 0; i < tricks.size(); i++) {
+	for (int i = 0; i < tricks.size(); i++) {
 		score += Deck::Get(tricks[i])->GetScore();
 	}
 	return score;
@@ -110,10 +112,16 @@ float Tarot::Player::GetScore() {
 
 void Tarot::Player::PlayCard(string card) {
 	RemoveCardFromHand(card);
+
+	// Updates public player statistics
+	Card* playedCard = Deck::Get(card);
+	if (!playedCard->IsFool()) {
+		suitPlayedLength[playedCard->GetSuit()]++;
+	}
 }
 
 void Tarot::Player::ReceiveDog(vector<string> dog) {
-	for (unsigned int i = 0; i < dog.size(); i++) {
+	for (int i = 0; i < dog.size(); i++) {
 		AddCardToHand(dog[i]);
 	}
 
@@ -124,14 +132,14 @@ void Tarot::Player::ReceiveDog(vector<string> dog) {
 }
 
 void Tarot::Player::MakeAside(vector<string> aside) {
-	for (unsigned int i = 0; i < aside.size(); i++) {
+	for (int i = 0; i < aside.size(); i++) {
 		RemoveCardFromHand(aside[i]);
 		AddCardToTricks(aside[i]);
 	}
 }
 
 void Tarot::Player::WinCards(vector<string> trick) {
-	for (unsigned int i = 0; i < trick.size(); i++) {
+	for (int i = 0; i < trick.size(); i++) {
 		AddCardToTricks(trick[i]);
 	}
 }
@@ -157,7 +165,7 @@ void Tarot::Player::GiveDumbCardTo(string dumbCard, Player* player) {
 bool Tarot::Player::CanHave(Card* card) {
 	bool canHaveThisSuit = CanHaveSuit(card->GetSuit());
 
-	if (card->GetSuit() == Suit::Trump) {
+	if (card->GetSuit() == Trump) {
 		return card->IsFool() || (canHaveThisSuit && CanHaveHigherTrump(card));
 	}
 
@@ -176,8 +184,50 @@ void Tarot::Player::HasNoMoreSuit(Suit suit) {
 	canHaveSuit[suit] = false;
 }
 
+bool Tarot::Player::HasPlayedSuit(Suit suit) {
+	return suitPlayedLength[suit] > 0;
+}
+
+bool Tarot::Player::HasPlayedSuitOnce(Suit suit) {
+	return suitPlayedLength[suit] == 1;
+}
+
 void Tarot::Player::HasNoHigherTrump(Card* trump) {
 	canHaveMaxTrump = trump;
+}
+
+int Tarot::Player::GetCutsCount() {
+	int cutsCount = 0;
+	if (!canHaveSuit[Club] && suitPlayedLength[Club] == 0) {
+		cutsCount++;
+	}
+	if (!canHaveSuit[Diamond] && suitPlayedLength[Diamond] == 0) {
+		cutsCount++;
+	}
+	if (!canHaveSuit[Heart] && suitPlayedLength[Heart] == 0) {
+		cutsCount++;
+	}
+	if (!canHaveSuit[Spade] && suitPlayedLength[Spade] == 0) {
+		cutsCount++;
+	}
+	return cutsCount;
+}
+
+int Tarot::Player::GetSingletonsCount() {
+	int singletonsCount = 0;
+	if (!canHaveSuit[Club] && suitPlayedLength[Club] == 1) {
+		singletonsCount++;
+	}
+	if (!canHaveSuit[Diamond] && suitPlayedLength[Diamond] == 1) {
+		singletonsCount++;
+	}
+	if (!canHaveSuit[Heart] && suitPlayedLength[Heart] == 1) {
+		singletonsCount++;
+	}
+	if (!canHaveSuit[Spade] && suitPlayedLength[Spade] == 1) {
+		singletonsCount++;
+	}
+	return singletonsCount;
 }
 
 pair<string, Tarot::Card*> Tarot::Player::GetPlayConstraints(Card* baseCard, Card* highestCard) {
@@ -189,13 +239,13 @@ pair<string, Tarot::Card*> Tarot::Player::GetPlayConstraints(Card* baseCard, Car
 	// If the player has no card of the required suit
 	if (!HasSuit(baseCard->GetSuit())) {
 		// If the player pisses, he can play whatever he wants
-		if (!HasSuit(Suit::Trump)) {
+		if (!HasSuit(Trump)) {
 			return pair<string, Card*>("anyCards", nullptr);
 		}
 		// Else the player must play a trump (or the fool)
 		else {
 			// A trump higher than highestCard
-			if (highestCard->GetSuit() == Suit::Trump && HasHigherTrump(highestCard)) {
+			if (highestCard->GetSuit() == Trump && HasHigherTrump(highestCard)) {
 				return pair<string, Card*>("trumpsHigherThan", highestCard);
 			}
 			// Any trump
@@ -207,7 +257,7 @@ pair<string, Tarot::Card*> Tarot::Player::GetPlayConstraints(Card* baseCard, Car
 	// Else, the player must play in this suit (or the fool)
 	else {
 		// A trump higher than highestCard
-		if (baseCard->GetSuit() == Suit::Trump && HasHigherTrump(highestCard)) {
+		if (baseCard->GetSuit() == Trump && HasHigherTrump(highestCard)) {
 			return pair<string, Card*>("trumpsHigherThan", highestCard);
 		}
 		// Any card of this suit
@@ -229,9 +279,9 @@ vector<string> Tarot::Player::GetPlayableCards(Card* baseCard, Card* highestCard
 		if (
 			(card->IsFool())
 			||
-			(playConstraints.first == "anyTrumps" && card->GetSuit() == Suit::Trump)
+			(playConstraints.first == "anyTrumps" && card->GetSuit() == Trump)
 			||
-			(playConstraints.first == "trumpsHigherThan" && card->GetSuit() == Suit::Trump && card->IsHigher(playConstraints.second))
+			(playConstraints.first == "trumpsHigherThan" && card->GetSuit() == Trump && card->IsHigher(playConstraints.second))
 			||
 			(playConstraints.first == "anyCardsInSuit" && card->GetSuit() == playConstraints.second->GetSuit())
 		) {
